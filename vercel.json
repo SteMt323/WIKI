@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "build_static.py", "use": "@vercel/python" }
+  ],
+  "routes": [],
+  "github": {
+    "enabled": true
+  },
+  "outputDirectory": "public"
+}

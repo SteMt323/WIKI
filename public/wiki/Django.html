@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es"> 
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Django</title>
+  <link rel="stylesheet" href="/static/encyclopedia/stylesv1.css"> 
+  <link rel="stylesheet" href="/static/encyclopedia/stylecards.css"> 
+</head>
+<body>
+  <div class="container"><h1>Django</h1>
+<h1>Django</h1>
+<p>Django is a web framework written using <a href="/wiki/Python">Python</a> that allows for the design of web applications that generate <a href="/wiki/HTML">HTML</a> dynamically.</p>
+<h3>Activación de entorno virtual</h3>
+<pre><code class="language-powershell">
+python -m venv venv
+
+</code></pre>
+<pre><code class="language-powershell">
+.\venv\Scripts\activate
+
+</code></pre>
+<h3>Instalación de Django</h3>
+<pre><code class="language-powershell">
+pip install django
+
+</code></pre>
+<h3>Creación del proyecto</h3>
+<pre><code class="language-powershell">
+django-admin startproject nombre_del_proyecto .
+
+</code></pre>
+<h3>Correr el servidor local del proyecto</h3>
+<pre><code class="language-powershell">
+python manage.py runserver
+
+</code></pre>
+<h3>Crear una aplicación</h3>
+<pre><code class="language-powershell">
+django-admin startapp nombre_de_app
+
+</code></pre>
+<h2>Patrón de Arquitectura</h2>
+<h3>MTV - MODEL TEMPLATE VIEW</h3>
+<h3>MVC - MODEL VIEW CONTROLLER</h3>
+<h2>Estructura de Archivos</h2>
+<h3>manage.py</h3>
+<p>Permite gestionar el proyecto</p>
+<h3>urls.py</h3>
+<p>Asocia las urls con las vistas que lo gestionan, es donde se escribiran</p>
+<p>todas las rutas y vistas las cuales vamos a ir controlando, para controlarlos se usan</p>
+<p>las "views" y para escribirlos / pintarlos se usan las "templates".</p>
+<h3>settings.py</h3>
+<p>Se trata de establecer las configuraciones del paquete</p>
+<h2>Modelo de Datos</h2>
+<h3>Migracines, modelo de datos</h3>
+<pre><code class="language-powershell">
+python manage.py migrate
+
+</code></pre>
+<h3>Levantar servidor local</h3>
+<pre><code class="language-powershell">
+python manage.py runserver
+
+</code></pre>
+<p>hola banda</p></div>
+</body>
+</html>

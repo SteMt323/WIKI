@@ -1,0 +1,7 @@
+{
+  "name": "wiki-static-build",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "python build_static.py"
+  }
+}

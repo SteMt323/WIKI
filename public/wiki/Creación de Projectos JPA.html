@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="es"> 
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Creación de Projectos JPA</title>
+  <link rel="stylesheet" href="/static/encyclopedia/stylesv1.css"> 
+  <link rel="stylesheet" href="/static/encyclopedia/stylecards.css"> 
+</head>
+<body>
+  <div class="container"><h1>Creación de Projectos JPA</h1>
+<h1>Guía: Crear un proyecto básico con JPA (Java Persistence API)</h1>
+<p>Esta guía paso a paso te muestra cómo crear un proyecto Java con <strong>JPA</strong> usando <strong>Maven</strong> y <strong>Hibernate</strong> como proveedor de JPA. Incluye desde las dependencias de Maven hasta ejemplos de código funcionales y cómo ejecutar el proyecto. Está pensada para ser clara y práctica para iniciarte rápido.</p>
+<hr />
+<h2>Requisitos previos</h2>
+<ul>
+<li>Java JDK 11+ instalado.</li>
+<li>Maven instalado (o usar el wrapper <code>mvnw</code>).</li>
+<li>IDE (IntelliJ IDEA, Eclipse, VS Code, etc.).</li>
+<li>Conexión a una base de datos (ejemplos con <strong>H2</strong> en memoria y <strong>MySQL</strong>).</li>
+</ul>
+<hr />
+<h2>1. Estructura mínima recomendada del proyecto</h2>
+<pre><code>mi-proyecto-jpa/
+├─ src/
+│  ├─ main/
+│  │  ├─ java/com/ejemplo/
+│  │  │  ├─ App.java
+│  │  │  ├─ model/Empleado.java
+│  │  │  └─ repository/EmpleadoRepository.java
+│  │  └─ resources/
+│  │     └─ META-INF/persistence.xml
+├─ pom.xml
+</code></pre>
+<hr />
+<h2>2. <code>pom.xml</code> (dependencias principales)</h2>
+<p>Copia estas dependencias en tu <code>pom.xml</code>. Ajusta las versiones si lo necesitas.</p>
+<pre><code class="language-xml">&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
+         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0
+             http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;groupId&gt;com.ejemplo&lt;/groupId&gt;
+  &lt;artifactId&gt;mi-proyecto-jpa&lt;/artifactId&gt;
+  &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+
+  &lt;properties&gt;
+    &lt;maven.compiler.source&gt;11&lt;/maven.compiler.source&gt;
+    &lt;maven.compiler.target&gt;11&lt;/maven.compiler.target&gt;
+    &lt;jakarta.persistence.version&gt;3.1.0&lt;/jakarta.persistence.version&gt;
+    &lt;hibernate.version&gt;6.4.0.Final&lt;/hibernate.version&gt;
+  &lt;/properties&gt;
+
+  &lt;dependencies&gt;
+    &lt;!-- API de JPA (Jakarta Persistence) --&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;jakarta.persistence&lt;/groupId&gt;
+      &lt;artifactId&gt;jakarta.persistence-api&lt;/artifactId&gt;
+      &lt;version&gt;${jakarta.persistence.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;!-- Hibernate (implementación de JPA) --&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.hibernate.orm&lt;/groupId&gt;
+      &lt;artifactId&gt;hibernate-core&lt;/artifactId&gt;
+      &lt;version&gt;${hibernate.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;!-- Controlador H2 (base de datos en memoria, útil para pruebas) --&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.h2database&lt;/groupId&gt;
+      &lt;artifactId&gt;h2&lt;/artifactId&gt;
+      &lt;version&gt;2.1.214&lt;/version&gt;
+      &lt;scope&gt;runtime&lt;/scope&gt;
+    &lt;/dependency&gt;
+
+    &lt;!-- (Opcional) Driver MySQL para usar MySQL en lugar de H2 --&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;mysql&lt;/groupId&gt;
+      &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+      &lt;version&gt;8.1.0&lt;/version&gt;
+      &lt;scope&gt;runtime&lt;/scope&gt;
+    &lt;/dependency&gt;
+
+    &lt;!-- (Opcional) Logger para ver SQL en consola --&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.jboss.logging&lt;/groupId&gt;
+      &lt;artifactId&gt;jboss-logging&lt;/artifactId&gt;
+      &lt;version&gt;3.5.1.Final&lt;/version&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+&lt;/project&gt;
+</code></pre>
+<blockquote>
+<p><strong>Nota:</strong> Las versiones mostradas son ejemplos estables; si usas versiones distintas, actualiza <code>hibernate.version</code> y <code>jakarta.persistence.version</code> según tu entorno.</p>
+</blockquote>
+<hr />
+<h2>3. Archivo de configuración <code>persistence.xml</code></h2>
+<p>Crea el archivo <code>src/main/resources/META-INF/persistence.xml</code>. Abajo hay dos ejemplos: uno con <strong>H2 (memoria)</strong> y otro con <strong>MySQL</strong>.</p>
+<h3>a) <code>persistence.xml</code> — H2 (rápido para pruebas)</h3>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;persistence xmlns=&quot;https://jakarta.ee/xml/ns/persistence&quot;
+             xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+             xsi:schemaLocation=&quot;https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd&quot;
+             version=&quot;3.0&quot;&gt;
+  &lt;persistence-unit name=&quot;MiUnidadPersistencia&quot; transaction-type=&quot;RESOURCE_LOCAL&quot;&gt;
+    &lt;class&gt;com.ejemplo.model.Empleado&lt;/class&gt;
+    &lt;properties&gt;
+      &lt;property name=&quot;jakarta.persistence.jdbc.url&quot; value=&quot;jdbc:h2:mem:mi_bd;DB_CLOSE_DELAY=-1&quot;/&gt;
+      &lt;property name=&quot;jakarta.persistence.jdbc.driver&quot; value=&quot;org.h2.Driver&quot;/&gt;
+      &lt;property name=&quot;jakarta.persistence.jdbc.user&quot; value=&quot;sa&quot;/&gt;
+      &lt;property name=&quot;jakarta.persistence.jdbc.password&quot; value=&quot;&quot;/&gt;
+
+      &lt;!-- Propiedades de Hibernate --&gt;
+      &lt;property name=&quot;hibernate.dialect&quot; value=&quot;org.hibernate.dialect.H2Dialect&quot;/&gt;
+      &lt;property name=&quot;hibernate.hbm2ddl.auto&quot; value=&quot;update&quot;/&gt;
+      &lt;property name=&quot;hibernate.show_sql&quot; value=&quot;true&quot;/&gt;
+      &lt;property name=&quot;hibernate.format_sql&quot; value=&quot;true&quot;/&gt;
+    &lt;/properties&gt;
+  &lt;/persistence-unit&gt;
+&lt;/persistence&gt;
+</code></pre>
+<h3>b) <code>persistence.xml</code> — MySQL (producción/local)</h3>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;persistence xmlns=&quot;https://jakarta.ee/xml/ns/persistence&quot;
+             xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+             xsi:schemaLocation=&quot;https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd&quot;
+             version=&quot;3.0&quot;&gt;
+  &lt;persistence-unit name=&quot;MiUnidadPersistencia&quot; transaction-type=&quot;RESOURCE_LOCAL&quot;&gt;
+    &lt;class&gt;com.ejemplo.model.Empleado&lt;/class&gt;
+    &lt;properties&gt;
+      &lt;property name=&quot;jakarta.persistence.jdbc.url&quot; value=&quot;jdbc:mysql://localhost:3306/mi_bd?useSSL=false&amp;amp;serverTimezone=UTC&quot;/&gt;
+      &lt;property name=&quot;jakarta.persistence.jdbc.driver&quot; value=&quot;com.mysql.cj.jdbc.Driver&quot;/&gt;
+      &lt;property name=&quot;jakarta.persistence.jdbc.user&quot; value=&quot;root&quot;/&gt;
+      &lt;property name=&quot;jakarta.persistence.jdbc.password&quot; value=&quot;tu_password&quot;/&gt;
+
+      &lt;!-- Propiedades de Hibernate --&gt;
+      &lt;property name=&quot;hibernate.dialect&quot; value=&quot;org.hibernate.dialect.MySQL8Dialect&quot;/&gt;
+      &lt;property name=&quot;hibernate.hbm2ddl.auto&quot; value=&quot;update&quot;/&gt;
+      &lt;property name=&quot;hibernate.show_sql&quot; value=&quot;true&quot;/&gt;
+      &lt;property name=&quot;hibernate.format_sql&quot; value=&quot;true&quot;/&gt;
+    &lt;/properties&gt;
+  &lt;/persistence-unit&gt;
+&lt;/persistence&gt;
+</code></pre>
+<hr />
+<h2>4. Clase entidad (Ejemplo <code>Empleado</code>)</h2>
+<p>Crea <code>src/main/java/com/ejemplo/model/Empleado.java</code>:</p>
+<pre><code class="language-java">package com.ejemplo.model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+
+@Entity
+@Table(name = &quot;empleados&quot;)
+public class Empleado {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 100)
+    private String nombre;
+
+    private String puesto;
+
+    public Empleado() {}
+
+    public Empleado(String nombre, String puesto) {
+        this.nombre = nombre;
+        this.puesto = puesto;
+    }
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+
+    public String getPuesto() { return puesto; }
+    public void setPuesto(String puesto) { this.puesto = puesto; }
+
+    @Override
+    public String toString() {
+        return &quot;Empleado{&quot; +
+               &quot;id=&quot; + id +
+               &quot;, nombre='&quot; + nombre + '\'' +
+               &quot;, puesto='&quot; + puesto + '\'' +
+               '}';
+    }
+}
+</code></pre>
+<hr />
+<h2>5. Repositorio sencillo usando <code>EntityManager</code></h2>
+<p>Crea <code>src/main/java/com/ejemplo/repository/EmpleadoRepository.java</code>:</p>
+<pre><code class="language-java">package com.ejemplo.repository;
+
+import com.ejemplo.model.Empleado;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import java.util.List;
+
+public class EmpleadoRepository {
+
+    private final EntityManager em;
+
+    public EmpleadoRepository(EntityManager em) {
+        this.em = em;
+    }
+
+    public Empleado guardar(Empleado e) {
+        em.getTransaction().begin();
+        em.persist(e);
+        em.getTransaction().commit();
+        return e;
+    }
+
+    public Empleado buscarPorId(Long id) {
+        return em.find(Empleado.class, id);
+    }
+
+    public List&lt;Empleado&gt; listarTodos() {
+        TypedQuery&lt;Empleado&gt; q = em.createQuery(&quot;SELECT e FROM Empleado e&quot;, Empleado.class);
+        return q.getResultList();
+    }
+
+    public Empleado actualizar(Empleado e) {
+        em.getTransaction().begin();
+        Empleado merged = em.merge(e);
+        em.getTransaction().commit();
+        return merged;
+    }
+
+    public void eliminar(Long id) {
+        em.getTransaction().begin();
+        Empleado e = em.find(Empleado.class, id);
+        if (e != null) {
+            em.remove(e);
+        }
+        em.getTransaction().commit();
+    }
+}
+</code></pre>
+<hr />
+<h2>6. Clase <code>App</code> con ejemplo de uso</h2>
+<p>Crea <code>src/main/java/com/ejemplo/App.java</code>:</p>
+<pre><code class="language-java">package com.ejemplo;
+
+import com.ejemplo.model.Empleado;
+import com.ejemplo.repository.EmpleadoRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import java.util.List;
+
+public class App {
+    public static void main(String[] args) {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory(&quot;MiUnidadPersistencia&quot;);
+        EntityManager em = emf.createEntityManager();
+
+        EmpleadoRepository repo = new EmpleadoRepository(em);
+
+        // Crear y guardar
+        Empleado ana = new Empleado(&quot;Ana López&quot;, &quot;Analista&quot;);
+        repo.guardar(ana);
+        System.out.println(&quot;Guardado: &quot; + ana);
+
+        // Listar
+        List&lt;Empleado&gt; empleados = repo.listarTodos();
+        System.out.println(&quot;Empleados en BD: &quot; + empleados);
+
+        // Buscar por id
+        Empleado e = repo.buscarPorId(ana.getId());
+        System.out.println(&quot;Encontrado por ID: &quot; + e);
+
+        // Actualizar
+        e.setPuesto(&quot;Senior Analyst&quot;);
+        repo.actualizar(e);
+        System.out.println(&quot;Actualizado: &quot; + repo.buscarPorId(e.getId()));
+
+        // Eliminar
+        repo.eliminar(e.getId());
+        System.out.println(&quot;Después de eliminar, lista: &quot; + repo.listarTodos());
+
+        em.close();
+        emf.close();
+    }
+}
+</code></pre>
+<hr />
+<h2>7. Comandos Maven útiles</h2>
+<ul>
+<li>Compilar: <code>mvn clean compile</code>  </li>
+<li>Ejecutar el <code>main</code> (si usas plugin exec): <code>mvn exec:java -Dexec.mainClass="com.ejemplo.App"</code>  </li>
+<li>Empaquetar: <code>mvn package</code></li>
+</ul>
+<p>Si usas IntelliJ o Eclipse, puedes ejecutar la clase <code>App</code> directamente desde el IDE.</p>
+<hr />
+<h2>8. Consejos y buenas prácticas</h2>
+<ul>
+<li>Para aplicaciones reales, considera usar <strong>DataSource</strong> administrado y transacciones gestionadas (JTA) si aplicable.  </li>
+<li>Evita usar <code>hibernate.hbm2ddl.auto = update</code> en producción; prefieres migraciones controladas (Flyway o Liquibase).  </li>
+<li>Usa <code>try/finally</code> o <code>try-with-resources</code> para garantizar el cierre del <code>EntityManager</code> y <code>EntityManagerFactory</code>.  </li>
+<li>Separa la lógica de persistencia (repositorios/DAOs) de la lógica de negocio.  </li>
+<li>Considera usar Spring Data JPA si trabajas en aplicaciones Spring para simplificar la implementación de repositorios.</li>
+</ul>
+<hr />
+<h2>9. Solución de problemas comunes</h2>
+<ul>
+<li><strong>No se encuentra la unidad de persistencia:</strong> Asegúrate de que <code>persistence.xml</code> esté en <code>src/main/resources/META-INF/</code>.  </li>
+<li><strong>Errores de driver JDBC:</strong> Verifica la dependencia del driver (H2 o MySQL) y la URL de conexión.  </li>
+<li><strong>DDL no aplicado:</strong> Revisa <code>hibernate.hbm2ddl.auto</code> y los logs (<code>hibernate.show_sql</code>).</li>
+</ul>
+<hr />
+<h2>10. Recursos adicionales</h2>
+<ul>
+<li>Documentación de Jakarta Persistence (JPA)  </li>
+<li>Documentación de Hibernate ORM  </li>
+<li>Tutoriales y ejemplos oficiales de tu proveedor de base de datos</li>
+</ul>
+<hr />
+<p>¡Listo! Con esto tienes una guía completa y funcional para crear un proyecto básico con JPA usando Maven y Hibernate. Sigue los pasos, copia los fragmentos y adapta la configuración a tu base de datos preferida.</p></div>
+</body>
+</html>

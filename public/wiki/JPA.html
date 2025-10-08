@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="es"> 
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>JPA</title>
+  <link rel="stylesheet" href="/static/encyclopedia/stylesv1.css"> 
+  <link rel="stylesheet" href="/static/encyclopedia/stylecards.css"> 
+</head>
+<body>
+  <div class="container"><h1>JPA</h1>
+<h1>🗃️ Java Persistence API (JPA) — Conceptos Básicos</h1>
+<p>La <strong>Java Persistence API (JPA)</strong> es una especificación de Java que permite <strong>gestionar la persistencia de datos</strong> en aplicaciones mediante <strong>mapeo objeto-relacional (ORM)</strong>.<br />
+Su objetivo principal es facilitar la interacción entre objetos Java y las tablas de una base de datos relacional sin necesidad de escribir sentencias SQL manualmente.</p>
+<hr />
+<h2>¿Qué es la Persistencia?</h2>
+<p>La <strong>persistencia</strong> se refiere a la capacidad de <strong>almacenar y recuperar el estado de los objetos</strong> en una base de datos u otro medio de almacenamiento permanente.</p>
+<p>Por ejemplo, un objeto <code>Empleado</code> creado en una aplicación Java puede almacenarse como un registro en la tabla <code>empleados</code> de la base de datos.</p>
+<hr />
+<h3>Entidades</h3>
+<p>Una <strong>entidad</strong> es una clase Java que representa una tabla en la base de datos.<br />
+Cada instancia de la clase corresponde a una fila (registro) de dicha tabla.</p>
+<p><strong>Características principales:</strong>
+- Debe estar anotada con <code>@Entity</code>.
+- Debe tener un campo identificado como clave primaria con <code>@Id</code>.
+- Debe tener un constructor público o protegido sin parámetros.</p>
+<p><strong>Ejemplo:</strong></p>
+<pre><code class="language-java">import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
+public class Empleado {
+    @Id
+    private int id;
+    private String nombre;
+    private String puesto;
+
+    // Constructor vacío requerido por JPA
+    public Empleado() {}
+
+    // Constructor con parámetros
+    public Empleado(int id, String nombre, String puesto) {
+        this.id = id;
+        this.nombre = nombre;
+        this.puesto = puesto;
+    }
+
+    // Getters y setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+
+    public String getPuesto() { return puesto; }
+    public void setPuesto(String puesto) { this.puesto = puesto; }
+}
+</code></pre>
+<hr />
+<h3>Unidad de Persistencia y <code>persistence.xml</code></h3>
+<p>La <strong>unidad de persistencia</strong> define la configuración necesaria para que JPA se comunique con la base de datos.<br />
+Esta configuración se declara en un archivo llamado <code>persistence.xml</code>, ubicado en <code>META-INF</code>.</p>
+<p><strong>Ejemplo:</strong></p>
+<pre><code class="language-xml">&lt;persistence xmlns=&quot;https://jakarta.ee/xml/ns/persistence&quot;
+             version=&quot;3.0&quot;&gt;
+  &lt;persistence-unit name=&quot;MiUnidadPersistencia&quot;&gt;
+    &lt;class&gt;com.ejemplo.Empleado&lt;/class&gt;
+    &lt;properties&gt;
+      &lt;property name=&quot;jakarta.persistence.jdbc.url&quot; value=&quot;jdbc:mysql://localhost:3306/empresa&quot;/&gt;
+      &lt;property name=&quot;jakarta.persistence.jdbc.user&quot; value=&quot;root&quot;/&gt;
+      &lt;property name=&quot;jakarta.persistence.jdbc.password&quot; value=&quot;1234&quot;/&gt;
+      &lt;property name=&quot;jakarta.persistence.jdbc.driver&quot; value=&quot;com.mysql.cj.jdbc.Driver&quot;/&gt;
+      &lt;property name=&quot;hibernate.hbm2ddl.auto&quot; value=&quot;update&quot;/&gt;
+    &lt;/properties&gt;
+  &lt;/persistence-unit&gt;
+&lt;/persistence&gt;
+</code></pre>
+<hr />
+<h3>Mapeo de Relaciones</h3>
+<p>JPA permite mapear relaciones entre entidades usando anotaciones específicas:</p>
+<table>
+<thead>
+<tr>
+<th>Tipo de relación</th>
+<th>Anotación</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Uno a uno</td>
+<td><code>@OneToOne</code></td>
+<td>Un empleado tiene un solo usuario</td>
+</tr>
+<tr>
+<td>Uno a muchos</td>
+<td><code>@OneToMany</code></td>
+<td>Un departamento tiene varios empleados</td>
+</tr>
+<tr>
+<td>Muchos a uno</td>
+<td><code>@ManyToOne</code></td>
+<td>Muchos empleados pertenecen a un departamento</td>
+</tr>
+<tr>
+<td>Muchos a muchos</td>
+<td><code>@ManyToMany</code></td>
+<td>Un proyecto puede tener varios empleados y viceversa</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ejemplo:</strong></p>
+<pre><code class="language-java">@Entity
+public class Departamento {
+    @Id
+    private int id;
+    private String nombre;
+
+    @OneToMany(mappedBy = &quot;departamento&quot;)
+    private List&lt;Empleado&gt; empleados;
+}
+</code></pre>
+<pre><code class="language-java">@Entity
+public class Empleado {
+    @Id
+    private int id;
+    private String nombre;
+
+    @ManyToOne
+    private Departamento departamento;
+}
+</code></pre>
+<hr />
+<h3>Anotaciones más comunes en JPA</h3>
+<table>
+<thead>
+<tr>
+<th>Anotación</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>@Entity</code></td>
+<td>Declara una clase como entidad persistente</td>
+</tr>
+<tr>
+<td><code>@Table</code></td>
+<td>Especifica el nombre de la tabla en la base de datos</td>
+</tr>
+<tr>
+<td><code>@Id</code></td>
+<td>Marca el campo como clave primaria</td>
+</tr>
+<tr>
+<td><code>@GeneratedValue</code></td>
+<td>Genera valores automáticamente para el campo ID</td>
+</tr>
+<tr>
+<td><code>@Column</code></td>
+<td>Define propiedades específicas de una columna</td>
+</tr>
+<tr>
+<td><code>@Transient</code></td>
+<td>Excluye un atributo de la persistencia</td>
+</tr>
+<tr>
+<td><code>@JoinColumn</code></td>
+<td>Define la columna usada en una relación</td>
+</tr>
+<tr>
+<td><code>@OneToOne</code>, <code>@OneToMany</code>, <code>@ManyToOne</code>, <code>@ManyToMany</code></td>
+<td>Mapean relaciones entre entidades</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ejemplo práctico:</strong></p>
+<pre><code class="language-java">@Entity
+@Table(name = &quot;empleados&quot;)
+public class Empleado {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(name = &quot;nombre&quot;, nullable = false, length = 100)
+    private String nombre;
+
+    @Transient
+    private int edadTemporal; // No se guarda en la BD
+}
+</code></pre>
+<hr />
+<h3>Ciclo de Vida de una Entidad</h3>
+<p>El ciclo de vida de un objeto en JPA se gestiona a través del <strong>EntityManager</strong>, que controla su estado:</p>
+<table>
+<thead>
+<tr>
+<th>Estado</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>New (transient)</strong></td>
+<td>El objeto se ha creado, pero aún no está gestionado por JPA.</td>
+</tr>
+<tr>
+<td><strong>Managed (persisted)</strong></td>
+<td>El objeto está siendo gestionado y sincronizado con la base de datos.</td>
+</tr>
+<tr>
+<td><strong>Detached</strong></td>
+<td>El objeto fue gestionado, pero ahora está fuera del contexto de persistencia.</td>
+</tr>
+<tr>
+<td><strong>Removed</strong></td>
+<td>El objeto se ha marcado para ser eliminado de la base de datos.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><strong>Ejemplo con <code>EntityManager</code>:</strong></p>
+<pre><code class="language-java">EntityManagerFactory emf = Persistence.createEntityManagerFactory(&quot;MiUnidadPersistencia&quot;);
+EntityManager em = emf.createEntityManager();
+
+em.getTransaction().begin();
+
+Empleado emp = new Empleado(1, &quot;Ana López&quot;, &quot;Analista&quot;);
+em.persist(emp); // Estado: managed
+
+em.getTransaction().commit();
+em.close(); // emp pasa a detached
+</code></pre>
+<hr />
+<h2>Conclusión</h2>
+<p>JPA simplifica enormemente el manejo de bases de datos en Java, eliminando la necesidad de escribir SQL manual y proporcionando una forma <strong>orientada a objetos y declarativa</strong> de trabajar con datos persistentes.<br />
+Entender las <strong>entidades</strong>, las <strong>relaciones</strong> y el <strong>ciclo de vida</strong> es fundamental para dominar esta tecnología.</p>
+<hr />
+<div class="highlight">
+<b>Consejo:</b> Usa JPA junto con un framework como <code>Hibernate</code> para aprovechar sus capacidades avanzadas de ORM y caching.
+</div></div>
+</body>
+</html>
