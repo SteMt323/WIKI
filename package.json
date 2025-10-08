@@ -2,6 +2,6 @@
   "name": "wiki-static-build",
   "version": "1.0.0",
   "scripts": {
-    "build": "python build_static.py"
+    "build": "python -m pip install -r requirements.txt && python build_static.py || python3 -m pip install -r requirements.txt && python3 build_static.py"
   }
 }
