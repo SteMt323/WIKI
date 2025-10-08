@@ -36,7 +36,7 @@
 <li>Java JDK 11+ instalado.</li>
 <li>Maven instalado (o usar el wrapper <code>mvnw</code>).</li>
 <li>IDE (IntelliJ IDEA, Eclipse, VS Code, etc.).</li>
-<li>Conexión a una base de datos (ejemplos con <strong>H2</strong> en memoria y <strong>MySQL</strong>).</li>
+<li>Conexión a una base de datos (ejemplos con <strong>H2</strong> en memoria y <strong>PostgreSQL</strong>).</li>
 </ul>
 <hr />
 <h2>1. Estructura mínima recomendada del proyecto</h2>
@@ -93,11 +93,11 @@
       &lt;scope&gt;runtime&lt;/scope&gt;
     &lt;/dependency&gt;
 
-    &lt;!-- (Opcional) Driver MySQL para usar MySQL en lugar de H2 --&gt;
+    &lt;!-- (Opcional) Driver PostgreSQL para usar PostgreSQL en lugar de H2 --&gt;
     &lt;dependency&gt;
-      &lt;groupId&gt;mysql&lt;/groupId&gt;
-      &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
-      &lt;version&gt;8.1.0&lt;/version&gt;
+      &lt;groupId&gt;org.postgresql&lt;/groupId&gt;
+      &lt;artifactId&gt;postgresql&lt;/artifactId&gt;
+      &lt;version&gt;42.7.3&lt;/version&gt;
       &lt;scope&gt;runtime&lt;/scope&gt;
     &lt;/dependency&gt;
 
@@ -115,7 +115,7 @@
 </blockquote>
 <hr />
 <h2>3. Archivo de configuración <code>persistence.xml</code></h2>
-<p>Crea el archivo <code>src/main/resources/META-INF/persistence.xml</code>. Abajo hay dos ejemplos: uno con <strong>H2 (memoria)</strong> y otro con <strong>MySQL</strong>.</p>
+<p>Crea el archivo <code>src/main/resources/META-INF/persistence.xml</code>. Abajo hay dos ejemplos: uno con <strong>H2 (memoria)</strong> y otro con <strong>PostgreSQL</strong>.</p>
 <h3>a) <code>persistence.xml</code> — H2 (rápido para pruebas)</h3>
 <pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;persistence xmlns=&quot;https://jakarta.ee/xml/ns/persistence&quot;
@@ -139,7 +139,7 @@
   &lt;/persistence-unit&gt;
 &lt;/persistence&gt;
 </code></pre>
-<h3>b) <code>persistence.xml</code> — MySQL (producción/local)</h3>
+<h3>b) <code>persistence.xml</code> — PostgreSQL (producción/local)</h3>
 <pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;persistence xmlns=&quot;https://jakarta.ee/xml/ns/persistence&quot;
              xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
@@ -148,13 +148,13 @@
   &lt;persistence-unit name=&quot;MiUnidadPersistencia&quot; transaction-type=&quot;RESOURCE_LOCAL&quot;&gt;
     &lt;class&gt;com.ejemplo.model.Empleado&lt;/class&gt;
     &lt;properties&gt;
-      &lt;property name=&quot;jakarta.persistence.jdbc.url&quot; value=&quot;jdbc:mysql://localhost:3306/mi_bd?useSSL=false&amp;amp;serverTimezone=UTC&quot;/&gt;
-      &lt;property name=&quot;jakarta.persistence.jdbc.driver&quot; value=&quot;com.mysql.cj.jdbc.Driver&quot;/&gt;
-      &lt;property name=&quot;jakarta.persistence.jdbc.user&quot; value=&quot;root&quot;/&gt;
+      &lt;property name=&quot;jakarta.persistence.jdbc.url&quot; value=&quot;jdbc:postgresql://localhost:5432/mi_bd&quot;/&gt;
+      &lt;property name=&quot;jakarta.persistence.jdbc.driver&quot; value=&quot;org.postgresql.Driver&quot;/&gt;
+      &lt;property name=&quot;jakarta.persistence.jdbc.user&quot; value=&quot;postgres&quot;/&gt;
       &lt;property name=&quot;jakarta.persistence.jdbc.password&quot; value=&quot;tu_password&quot;/&gt;
 
       &lt;!-- Propiedades de Hibernate --&gt;
-      &lt;property name=&quot;hibernate.dialect&quot; value=&quot;org.hibernate.dialect.MySQL8Dialect&quot;/&gt;
+      &lt;property name=&quot;hibernate.dialect&quot; value=&quot;org.hibernate.dialect.PostgreSQLDialect&quot;/&gt;
       &lt;property name=&quot;hibernate.hbm2ddl.auto&quot; value=&quot;update&quot;/&gt;
       &lt;property name=&quot;hibernate.show_sql&quot; value=&quot;true&quot;/&gt;
       &lt;property name=&quot;hibernate.format_sql&quot; value=&quot;true&quot;/&gt;
@@ -331,7 +331,7 @@ public class App {
 <h2>9. Solución de problemas comunes</h2>
 <ul>
 <li><strong>No se encuentra la unidad de persistencia:</strong> Asegúrate de que <code>persistence.xml</code> esté en <code>src/main/resources/META-INF/</code>.  </li>
-<li><strong>Errores de driver JDBC:</strong> Verifica la dependencia del driver (H2 o MySQL) y la URL de conexión.  </li>
+<li><strong>Errores de driver JDBC:</strong> Verifica la dependencia del driver (PostgreSQL) y la URL de conexión.  </li>
 <li><strong>DDL no aplicado:</strong> Revisa <code>hibernate.hbm2ddl.auto</code> y los logs (<code>hibernate.show_sql</code>).</li>
 </ul>
 <hr />

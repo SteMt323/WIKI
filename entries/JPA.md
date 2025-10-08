@@ -75,10 +75,10 @@ Esta configuración se declara en un archivo llamado `persistence.xml`, ubicado 
   <persistence-unit name="MiUnidadPersistencia">
     <class>com.ejemplo.Empleado</class>
     <properties>
-      <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/empresa"/>
+      <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:3306/empresa"/>
       <property name="jakarta.persistence.jdbc.user" value="root"/>
       <property name="jakarta.persistence.jdbc.password" value="1234"/>
-      <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+      <property name="jakarta.persistence.jdbc.driver" value="com.postgresql.cj.jdbc.Driver"/>
       <property name="hibernate.hbm2ddl.auto" value="update"/>
     </properties>
   </persistence-unit>

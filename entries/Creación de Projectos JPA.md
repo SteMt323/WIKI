@@ -9,7 +9,7 @@ Esta guía paso a paso te muestra cómo crear un proyecto Java con **JPA** usand
 - Java JDK 11+ instalado.
 - Maven instalado (o usar el wrapper `mvnw`).
 - IDE (IntelliJ IDEA, Eclipse, VS Code, etc.).
-- Conexión a una base de datos (ejemplos con **H2** en memoria y **MySQL**).
+- Conexión a una base de datos (ejemplos con **H2** en memoria y **PostgreSQL**).
 
 ---
 
@@ -74,11 +74,11 @@ Copia estas dependencias en tu `pom.xml`. Ajusta las versiones si lo necesitas.
       <scope>runtime</scope>
     </dependency>
 
-    <!-- (Opcional) Driver MySQL para usar MySQL en lugar de H2 -->
+    <!-- (Opcional) Driver PostgreSQL para usar PostgreSQL en lugar de H2 -->
     <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <version>8.1.0</version>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.7.3</version>
       <scope>runtime</scope>
     </dependency>
 
@@ -98,7 +98,7 @@ Copia estas dependencias en tu `pom.xml`. Ajusta las versiones si lo necesitas.
 
 ## 3. Archivo de configuración `persistence.xml`
 
-Crea el archivo `src/main/resources/META-INF/persistence.xml`. Abajo hay dos ejemplos: uno con **H2 (memoria)** y otro con **MySQL**.
+Crea el archivo `src/main/resources/META-INF/persistence.xml`. Abajo hay dos ejemplos: uno con **H2 (memoria)** y otro con **PostgreSQL**.
 
 ### a) `persistence.xml` — H2 (rápido para pruebas)
 
@@ -126,7 +126,7 @@ Crea el archivo `src/main/resources/META-INF/persistence.xml`. Abajo hay dos eje
 </persistence>
 ```
 
-### b) `persistence.xml` — MySQL (producción/local)
+### b) `persistence.xml` — PostgreSQL (producción/local)
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -137,13 +137,13 @@ Crea el archivo `src/main/resources/META-INF/persistence.xml`. Abajo hay dos eje
   <persistence-unit name="MiUnidadPersistencia" transaction-type="RESOURCE_LOCAL">
     <class>com.ejemplo.model.Empleado</class>
     <properties>
-      <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/mi_bd?useSSL=false&amp;serverTimezone=UTC"/>
-      <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-      <property name="jakarta.persistence.jdbc.user" value="root"/>
+      <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/mi_bd"/>
+      <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+      <property name="jakarta.persistence.jdbc.user" value="postgres"/>
       <property name="jakarta.persistence.jdbc.password" value="tu_password"/>
 
       <!-- Propiedades de Hibernate -->
-      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
       <property name="hibernate.hbm2ddl.auto" value="update"/>
       <property name="hibernate.show_sql" value="true"/>
       <property name="hibernate.format_sql" value="true"/>
@@ -340,7 +340,7 @@ Si usas IntelliJ o Eclipse, puedes ejecutar la clase `App` directamente desde el
 ## 9. Solución de problemas comunes
 
 - **No se encuentra la unidad de persistencia:** Asegúrate de que `persistence.xml` esté en `src/main/resources/META-INF/`.  
-- **Errores de driver JDBC:** Verifica la dependencia del driver (H2 o MySQL) y la URL de conexión.  
+- **Errores de driver JDBC:** Verifica la dependencia del driver (PostgreSQL) y la URL de conexión.  
 - **DDL no aplicado:** Revisa `hibernate.hbm2ddl.auto` y los logs (`hibernate.show_sql`).
 
 ---
