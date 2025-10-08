@@ -103,5 +103,3 @@ start public\index.html
 Notas:
 - Si ya ejecutaste `python build_static.py` localmente y `public/` está presente, Vercel desplegará esa salida tras ejecutar el mismo build en su entorno.
 - He añadido `.vercelignore` para evitar subir entornos virtuales, bases de datos locales y la carpeta `public/` (si prefieres que Vercel use la `public/` existente, elimina esa línea de `.vercelignore`).
-
-Si quieres, puedo preparar una rama lista para desplegar con `public/` incluida en el repo (git commit) o ayudarte a conectar GitHub y ajustar variables de entorno en Vercel.
