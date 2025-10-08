@@ -16,48 +16,58 @@
     display: -webkit-flex;
     justify-content: center;
     -webkit-justify-content: center;
-    max-width: 820px;
+    /* Allow wrapping so cards stack 3-per-row and page scroll is vertical */
+    flex-wrap: wrap;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
 }
 
 .card__img, .card__img--hover {
+    /* default placeholder background if an image isn't set per-card */
     background-image: url('https://images.pexels.com/photos/45202/brownie-dessert-cake-sweet-45202.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 
 
 .card__img {
-  visibility: hidden;
+    /* Show the image area at the top of the card (slightly less tall) */
+    display: block;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     width: 100%;
-    height: 235px;
-  border-top-left-radius: 12px;
-border-top-right-radius: 12px;
-  
+    height: 200px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
 }
 
 .card__img--hover {
-  transition: 0.2s all ease-out;
+    transition: 0.2s all ease-out;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    position: absolute;
     width: 100%;
-  position: absolute;
     height: 235px;
   border-top-left-radius: 12px;
 border-top-right-radius: 12px;
-top: 0;
-  
+    top: 0;
+    left: 0;
+    opacity: 0; /* only reveal overlay on hover */
 }
 .card {
-  flex: 1 1 300px;
-  max-width: 350px;
-  margin: 1rem;
-  margin-right: 25px;
+  /* Wider and slightly less tall cards; allow 3 per row via flex-wrap */
+  flex: 1 1 calc(33.333% - 2rem);
+  max-width: 360px;
+  min-width: 260px;
+  margin: 1rem 0;
   transition: all .4s cubic-bezier(0.175, 0.885, 0, 1);
   background-color: #1c1c1c;
-  width: 33.3%;
   position: relative;
   border-radius: 12px;
   overflow: hidden;
@@ -74,6 +84,7 @@ z-index: 2;
   border-bottom-left-radius: 12px;
 border-bottom-right-radius: 12px;
    padding: 16px 24px 24px 24px;
+  transition: background-color .25s ease;
 }
 
 .card__category {
@@ -114,8 +125,9 @@ border-bottom-right-radius: 12px;
 }
 
 .card:hover .card__info {
-    background-color: transparent;
-    position: relative;
+  background-color: transparent;
+  position: relative;
+  /* keep text visible while the background becomes transparent */
 }
 
 .card:hover .card__info-hover {
