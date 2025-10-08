@@ -1,0 +1,26 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Encyclopedia
+{% endblock %}
+
+{% block body %}
+    <h1>All Pages</h1>
+
+    <div class="cards-container">
+        {% for entry in entries %}
+            <article class="card card--1">
+                <div class="card__img" style="background-image: url('{{ entry.image_url }}');"></div>
+                    <a href="{% url 'wiki' entry.title %}" class="card_link">
+                    <div class="card__img--hover" style="background-image: url('{{ entry.image_url }}');"></div>
+                    </a>
+                <div class="card__info">
+                    <span class="card__category"> {{ entry.category }} </span>
+                    <h3 class="card__title"> {{ entry.title }} </h3>
+                    <span class="card__by">by <a href="" class="card__author" title="author"> {{ entry.author }} </a></span>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+
+{% endblock %}

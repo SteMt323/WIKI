@@ -1,0 +1,12 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block body %}
+    <h1>Editar entrada: {{ title }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        <textarea name="content" rows="20" cols="80">{{ content }}</textarea>
+        <br>
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        <a href="{% url 'wiki' title %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+{% endblock %}

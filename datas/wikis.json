@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Csharp",
+    "category": "Lenguaje de Programacion",
+    "author": "Ana Torres"
+  },
+  {
+    "title": "Django",
+    "category": "Framework Web",
+    "author": "Maria Lopez"
+  },
+  {
+    "title": "Aprendiendo Python",
+    "category": "Programacion",
+    "author": "StvMt"
+  },
+  {
+    "title": "FastApi",
+    "category": "Desarrollo Web",
+    "author": "StvMt323"
+  },
+  {
+    "title": "JPA",
+    "category": "Fundamentals Concepts",
+    "author": "Grupo 6 - POO"
+  },
+  {
+    "title": "Creación de Projectos JPA",
+    "category": "Programation",
+    "author": "Grupo 6 - POO"
+  }
+]

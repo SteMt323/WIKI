@@ -1,0 +1,40 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Encyclopedia
+{% endblock %}
+
+{% block body %}
+    <div class="form-newpage">
+        <div class="class-help" style="margin-bottom:12px;">
+            <label for="available-classes"><strong>Clases disponibles (puedes usar class=\"...\"):</strong></label>
+            <select id="available-classes" style="width:100%;padding:8px;" onchange="copyClass(this.value)">
+                <option value="">-- Selecciona para copiar --</option>
+                <option value="card-demo">card-demo</option>
+                <option value="highlight">highlight</option>
+                <option value="centered">centered</option>
+                <option value="callout">callout</option>
+            </select>
+            <small>Selecciona una clase para copiar su nombre al portapapeles y pegarla en tu HTML/Markdown.</small>
+        </div>
+        <form method="post"  enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {% if error %}
+            <div class="alert alert-danger">{{ error }} </div>
+        {% endif %}
+        <button type="submit" class="btn btn-primary">Subir</button>
+    </form>
+    </div>
+    <script>
+    function copyClass(val){
+        if(!val) return;
+        navigator.clipboard && navigator.clipboard.writeText(val).then(function(){
+            alert('Clase "' + val + '" copiada al portapapeles. Pega en tu etiqueta: class="'+val+'"');
+        }, function(){
+            var ta = document.createElement('textarea'); ta.value = val; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); alert('Clase copiada al portapapeles'); }catch(e){ alert('No se pudo copiar automáticamente. Copia manualmente: ' + val);} ta.remove();
+        });
+    }
+    </script>
+    
+{% endblock %}

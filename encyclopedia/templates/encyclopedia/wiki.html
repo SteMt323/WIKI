@@ -1,0 +1,13 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    {{ title|safe }}
+{% endblock %}
+
+{% block body %}
+    {{ wikis|safe }}
+
+    <div class="edit-container">
+        <a class="sidebar-links" href="{% url 'edit_entry' title %}">Editar</a>
+    </div>
+{% endblock %}
