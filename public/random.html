@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es"> 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Random</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/encyclopedia/stylesv1.css"> 
+    <link rel="stylesheet" href="/static/encyclopedia/stylecards.css"> 
+</head>
+<body>
+    <div class="row"> 
+        <div class="sidebar col-lg-2 col-md-3"> 
+            <h2 class="letters">Wiki</h2>
+                <form action="/search/" method="get"> 
+                <div class="search-input"> 
+                        <input class="search" type="text" name="q" placeholder="Search Encyclopedia"> 
+                </div>
+            </form>
+            <div class="sidebar-elements"> 
+                <a class="sidebar-links" href="/">Home</a>
+            </div>
+            <div class="sidebar-elements"> 
+                <a class="sidebar-links" href="/newpage.html">Create New Page</a>
+            </div>
+            <div class="sidebar-elements"> 
+                <a class="sidebar-links" href="/random.html">Random Page</a>
+            </div>
+        </div>
+        <div class="main col-lg-10 col-md-9"><h1>Random page</h1><script>const s=["creacion-de-projectos-jpa", "csharp", "django", "fastapi", "jpa"]; location.href = '/wiki/' + s[Math.floor(Math.random()*s.length)];</script></div>
+    </div>
+</body>
+</html>

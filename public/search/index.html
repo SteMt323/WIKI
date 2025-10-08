@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Index</title>
+    <title>Search</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/encyclopedia/stylesv1.css"> 
     <link rel="stylesheet" href="/static/encyclopedia/stylecards.css"> 
@@ -27,8 +27,9 @@
                 <a class="sidebar-links" href="/random.html">Random Page</a>
             </div>
         </div>
-        <div class="main col-lg-10 col-md-9"><h1>Wiki</h1>
-<div class="cards">
+        <div class="main col-lg-10 col-md-9"><h1>Search</h1>
+<p id="msg"></p>
+<div id="cards" class="cards">
 <div class="card" data-title="creación de projectos jpa">
   <div class="card__img" style="background-image: url('/static/images/Creación de Projectos JPA.webp')"></div>
   <div class="card__img--hover" style="background-image: url('/static/images/Creación de Projectos JPA.webp')"></div>
@@ -89,5 +90,34 @@
 </div>
 </div></div>
     </div>
+
+<script>
+    (function(){
+        const params = new URLSearchParams(window.location.search);
+        const q = (params.get('q') || '').toLowerCase();
+        const cards = Array.from(document.querySelectorAll('.card'));
+        if(!q){
+            document.getElementById('msg').textContent = 'Use the search box to filter entries.';
+            return;
+        }
+        let found = 0;
+        cards.forEach(c=>{
+            const title = c.getAttribute('data-title') || '';
+            if(title.includes(q)){
+                c.style.display = '';
+                found++;
+            } else {
+                c.style.display = 'none';
+            }
+        });
+        document.getElementById('msg').textContent = found ? found + ' results' : 'No results';
+        if(found === 1){
+            const visible = cards.find(c=>c.style.display !== 'none');
+            const a = visible && visible.querySelector('a');
+            if(a) window.location.href = a.href;
+        }
+    })();
+</script>
+
 </body>
 </html>
